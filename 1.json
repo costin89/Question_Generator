@@ -1,0 +1,15 @@
+{
+  "name": "Max Mustermann",
+  "email": "max.mustermann@example.com",
+  "age": 30,
+  "address": {
+    "street": "Musterstraße 1",
+    "city": "Musterstadt",
+    "zip": "12345"
+  },
+  "phone_numbers": [
+    "+49 123 456789",
+    "+49 987 654321"
+  ],
+  "is_employee": true
+}
