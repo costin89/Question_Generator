@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Frage-Antwort-Spiel</title>
+  </head>
+  <body>
+    <h1>Frage-Antwort-Spiel</h1>
+    
+    <div id="input-container">
+      <!-- Hier werden die Inputfelder generiert -->
+    </div>
+    
+    <button id="generate-btn">Generate</button>
+    <button id="export-btn">Export</button>
+    
+    <script>
+      const inputContainer = document.getElementById("input-container");
+      const generateBtn = document.getElementById("generate-btn");
+      const exportBtn = document.getElementById("export-btn");
+      let inputCount = 0;
+      let data = {};
+      
+      // Funktion zum Generieren von Inputfeldern
+      function generateInputs() {
+        inputCount++;
+        const label = document.createElement("label");
+        label.innerHTML = `Frage ${inputCount}: `;
+        const questionInput = document.createElement("input");
+        questionInput.type = "text";
+        questionInput.name = `question-${inputCount}`;
+        
+        inputContainer.appendChild(label);
+        inputContainer.appendChild(questionInput);
+        inputContainer.appendChild(document.createElement("br"));
+        
+        let answerCount = NaN;
+        while (isNaN(answerCount) || answerCount < 1) {
+          answerCount = parseInt(prompt("Wie viele Antwortfelder benötigen Sie?"));
+        }
+        // Stellt sicher, dass nicht mehr als fünf Antwortfelder generiert werden
+        const actualAnswerCount = Math.min(answerCount, 5);
+        
+        for (let i = 1; i <= actualAnswerCount; i++) {
+          const answerDiv = document.createElement("div"); // neues div-Element für Antwort und Switch
+          const answerLabel = document.createElement("label");
+          answerLabel.innerHTML = `Antwort ${i} für Frage ${inputCount}: `;
+          const answerInput = document.createElement("input");
+          answerInput.type = "text";
+          answerInput.name = `answer-${inputCount}-${i}`;
+          const switchLabel = document.createElement("label");
+          switchLabel.innerHTML = "Switch: ";
+          const switchInput = document.createElement("input");
+          switchInput.type = "checkbox";
+          switchInput.name = `switch-${inputCount}-${i}`;
+          
+          answerDiv.appendChild(answerLabel);
+          answerDiv.appendChild(answerInput);
+          answerDiv.appendChild(switchLabel);
+          answerDiv.appendChild(switchInput);
+          inputContainer.appendChild(answerDiv); // füge das neue div-Element zum Input-Container hinzu
+          inputContainer.appendChild(document.createElement("br"));
+        }
+      }
+      
+      // Funktion zum Exportieren der Daten in eine JSON-Datei
+      function exportData() {
+        const inputs = inputContainer.querySelectorAll("input");
+        data = [];
+        
+        inputs.forEach(input => {
+          const inputName = input.name;
+          const inputVal = input.value;
+          
+          if (inputName.startsWith("question")) {
+            const questionNum = inputName.split("-")[1];
+            const questionObj = {
+              "ID": questionNum.trim(),
+              "fragen text": inputVal.trim(),
+              "switches": [],
+              "object": {}
+            };
+            data.push(questionObj);
+          } else if (inputName.startsWith("answer")) {
+            const questionNum = inputName.split("-")[1];
+            const answerNum = inputName.split("-")[2];
+            const questionObj = data.find(obj => obj.ID === questionNum.trim());
+            if (questionObj) {
+              questionObj.object[`antwort ${answerNum.trim()}`] = inputVal.trim();
+              const switchInput = inputContainer.querySelector(`input[name="switch-${questionNum}-${answerNum}"]`);
+              questionObj.switches.push(switchInput.checked);
+            }
+          }
+        });
+        
+        const dataStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.download = "fragen-antworten.json";
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      // Hinzufügen von Event Listenern zu den Buttons
+      generateBtn.addEventListener("click", generateInputs);
+      exportBtn.addEventListener("click", exportData);
+      window.addEventListener("DOMContentLoaded", addSwitches);
+    </script>
+  </body>
+</html>
