@@ -1,0 +1,32 @@
+[
+  {
+    "ID": "1",
+    "fragen text": "das ist ein test",
+    "switches": [
+      false,
+      false,
+      true,
+      false,
+      false
+    ],
+    "object": {
+      "antwort 1": "1",
+      "antwort 2": "2",
+      "antwort 3": "3",
+      "antwort 4": "4",
+      "antwort 5": "5"
+    }
+  },
+  {
+    "ID": "2",
+    "fragen text": "das ist ein 2 test",
+    "switches": [
+      true,
+      false
+    ],
+    "object": {
+      "antwort 1": "3",
+      "antwort 2": "4"
+    }
+  }
+]
