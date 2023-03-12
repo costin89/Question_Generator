@@ -1,5 +1,4 @@
-[
-  {
+{
     "ID": "1",
     "fragen text": "das ist ein test",
     "switches": [
@@ -29,4 +28,3 @@
       "antwort 2": "4"
     }
   }
-]
