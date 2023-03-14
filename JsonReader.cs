@@ -1,41 +1,39 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class JsonReader : MonoBehaviour
 {
-    public string webURL;
-    private string logFilePath = "log.txt";
-
+    
+    public string jsonURL;
+    
+    // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(GetJSONData());
+        //processJsonData(jsonURL);
+        StartCoroutine(getJsonFromURL());
     }
-
-    IEnumerator GetJSONData()
+    
+    IEnumerator getJsonFromURL()
     {
-        UnityWebRequest www = UnityWebRequest.Get(webURL);
-
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.LogError("Error while fetching JSON data: " + www.error);
-            yield break;
+        Debug.Log("Processing Data, Please Wait");
+        WWW _www = new WWW(jsonURL);
+        yield return _www;
+        if(_www.error == null)
+        { 
+            processJsonData(_www.text);
         }
-
-        string json = www.downloadHandler.text;
-        Debug.Log(json);
-
-        WriteToLog(json);
+        else
+        {
+            Debug.Log ("Oops something went wrong");
+        }
     }
-
-    void WriteToLog(string json)
+    // Update is called once per frame
+     private void processJsonData(string _url)
     {
-        // write to log file
-        using (System.IO.StreamWriter file = new System.IO.StreamWriter(logFilePath, true))
-        {
-            file.WriteLine(json);
-        }
+        jsonClass jsnD = JsonUtility.FromJson<jsonClass>(_url);
+        Debug.Log(jsnD.name);
+        Debug.Log(jsnD.email);
+        Debug.Log(jsnD.age);
     }
 }
